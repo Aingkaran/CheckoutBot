@@ -1,5 +1,5 @@
 {
-  "name": "CheckoutBot",
+  "name": "checkoutBot",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,15 +10,23 @@
     "tauri": "tauri"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
+    "@fontsource/roboto": "^4.5.8",
+    "@mui/icons-material": "^5.11.9",
+    "@mui/material": "^5.11.10",
+    "@tauri-apps/api": "^1.2.0",
+    "latest": "^0.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "@tauri-apps/api": "^1.2.0"
+    "react-pro-sidebar": "^1.0.0"
   },
   "devDependencies": {
+    "@tauri-apps/cli": "^1.2.2",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
     "@vitejs/plugin-react": "^3.0.0",
-    "vite": "^4.0.0",
-    "@tauri-apps/cli": "^1.2.2"
+    "react-router-dom": "^6.8.1",
+    "vite": "^4.0.0"
   }
 }
