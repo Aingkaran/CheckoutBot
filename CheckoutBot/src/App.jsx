@@ -3,10 +3,10 @@ import { invoke } from "@tauri-apps/api/tauri";
 import "./App.css";
 import Button from '@mui/material/Button';
 import SidebarGlobal from "./scenes/global/SidebarGlobal";
-import Tasks from "./scenes/tasks/Tasks";
-import Proxies from "./scenes/proxies/Proxies";
+import Tasks from "./scenes/tasks";
+import Proxies from "./scenes/proxies";
 import { Routes, Route } from "react-router-dom";
-import Billing from "./scenes/billing/Billing";
+import Billing from "./scenes/billing/";
 
 function App() {
 
