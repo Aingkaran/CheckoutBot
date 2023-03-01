@@ -1,0 +1,40 @@
+.task-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+}
+
+.topRow {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.topRow-leftSide {
+    display: flex;
+    gap: 0.5rem
+}
+
+.topRow-rightSide {
+    display: flex;
+    gap: 0.5rem
+}
+
+.middleRow {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.middleRow-leftSide {
+    display: flex;
+    gap: 0.5rem;
+    border-color: #f6f6f6;
+    background-color: #f6f6f6;
+}
+
+.middleRow-rightSide {
+    display: flex;
+    gap: 0.5rem
+}

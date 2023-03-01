@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { Box, IconButton, Typography, useTheme } from '@mui/material'
-
-
+import { Box, IconButton, Typography, useTheme, Button, TextField } from '@mui/material'
+import "./style.css"
+import SearchIcon from '@mui/icons-material/Search';
+import Search from '@mui/icons-material/Search';
 
 const Tasks = () => {
     const columns = [
@@ -51,26 +52,56 @@ const Tasks = () => {
 
 
     return (
-        <Box sx={{ height: 400, width: '100%' }}>
-            <DataGrid
-                rows={rows}
-                columns={columns}
-                pageSize={5}
-                rowsPerPageOptions={[5]}
-                checkboxSelection
-                disableSelectionOnClick
-                experimentalFeatures={{ newEditingApi: true }}
-                sx={{
-                    boxShadow: 2,
-                    color: 'black',
-                    border: 2,
-                    borderColor: 'black',
-                    '& .MuiDataGrid-cell:hover': {
-                        color: 'white',
-                    },
-                }}
-            />
-        </Box>
+        <div class="task-container">
+            <div class="topRow">
+                <div class="topRow-leftSide">
+                    <Button size="small" variant="contained">Task Creator +</Button>
+                    <Button size="small" variant="contained">Clear All Tasks -</Button>
+                </div>
+                <div class="topRow-rightSide">
+                    <Button size="small" variant="contained">Import</Button>
+                    <Button size="small" variant="contained">Export</Button>
+                </div>
+            </div>
+            <div class="middleRow">
+                <div class="middleRow-leftSide">
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                        <Search style={{ color: "black" }} />
+                        <input style={{ width: "25vw" }} />
+                    </div>
+
+                </div>
+                <div class="middleRow-rightSide">
+                    <Button size="small" variant="contained" >Edit All</Button>
+                    <Button size="small" variant="contained">Stop All</Button>
+                    <Button size="small" variant="contained">Start All</Button>
+                </div>
+            </div>
+
+            <Box sx={{ height: 400, width: '100%' }}>
+                <DataGrid
+                    rows={rows}
+                    columns={columns}
+                    pageSize={5}
+                    rowsPerPageOptions={[5]}
+                    checkboxSelection
+                    disableSelectionOnClick
+                    experimentalFeatures={{ newEditingApi: true }}
+                    sx={{
+                        boxShadow: 2,
+                        color: 'black',
+                        border: 2,
+                        borderColor: 'black',
+                        '& .MuiDataGrid-cell:hover': {
+                            color: 'white',
+                        },
+                    }}
+                />
+            </Box>
+
+
+        </div >
+
     )
 
 }
