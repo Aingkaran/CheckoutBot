@@ -11,13 +11,15 @@ import Billing from "./scenes/billing/";
 function App() {
 
   return (
-    <div className="container">
+    <div className="container" style={{ display: 'flex', height: "100vh" }}>
       <SidebarGlobal />
-      <Routes>
-        <Route path="/" element={<Tasks />} />
-        <Route path="/billing" element={<Billing />} />
-        <Route path="/proxies" element={<Proxies />} />
-      </Routes>
+      <main style={{ width: '100vw', margin: '2rem' }}>
+        <Routes class="content">
+          <Route path="/" element={<Tasks />} />
+          <Route path="/billing" element={<Billing />} />
+          <Route path="/proxies" element={<Proxies />} />
+        </Routes>
+      </main>
     </div>
   );
 }

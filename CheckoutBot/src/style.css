@@ -23,7 +23,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
   /* additions here*/
   height: 100vh;
-  background: black;
 }
 
 code {

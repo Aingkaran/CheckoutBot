@@ -1,7 +1,8 @@
+import "./style.css"
 const Proxies = () => {
 
     return (
-        <div> Proxies</div>
+        <div class="test"> Proxies</div >
     )
 
 }

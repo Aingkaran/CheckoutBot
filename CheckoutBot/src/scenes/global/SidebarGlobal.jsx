@@ -15,56 +15,47 @@ const SidebarGlobal = () => {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [selected, setSelected] = useState("Dashboard")
     return (
-        <Box
-            sx={{
-                backgroundColor: 'blacks',
-            }}
-        >
-            <div style={{ display: 'flex', height: '100%' }} >
 
-                <Sidebar style={{ height: "100vh" }} backgroundColor="#009788">
-                    <Menu >
-                        <MenuItem
-                            title="Tasks"
-                            icon={<MenuIcon
-                                onClick={() => {
-                                    collapseSidebar()
-                                    setIsCollapsed(!isCollapsed)
-                                    console.log(isCollapsed)
-                                }} />}
-                            component={<Link to="/" />}
-                            style={{
-                                margin: "10px 0 20px 0",
+        <div style={{ display: 'flex', height: "100vh" }}>
+            <Sidebar backgroundColor="#009788">
+                <Menu >
+                    <MenuItem
+                        title="Tasks"
+                        icon={<MenuIcon
+                            onClick={() => {
+                                collapseSidebar()
+                                setIsCollapsed(!isCollapsed)
+                                console.log(isCollapsed)
+                            }} />}
+                        component={<Link to="/" />}
+                        style={{
+                            margin: "10px 0 20px 0",
 
-                            }}
-                        >
-                            {!isCollapsed && (
-                                <Box
-                                    display="flex"
-                                    justifyContent="space-between"
-                                    alignItems="center"
-                                    ml="15px"
-                                >
+                        }}
+                    >
+                        {!isCollapsed && (
+                            <Box
+                                display="flex"
+                                justifyContent="space-between"
+                                alignItems="center"
+                                ml="15px"
+                            >
 
-                                </Box>
-                            )}
+                            </Box>
+                        )}
 
-                            {!isCollapsed && (<h1>Ultimate ShotBOT</h1>)}
-                        </MenuItem>
+                        {!isCollapsed && (<h1>Ultimate ShotBOT</h1>)}
+                    </MenuItem>
 
-                        <Box paddingLeft={isCollapsed ? undefined : "5%"}>
-                            <MenuItem title="Tasks" icon={<AssignmentIcon />} component={<Link to="/" />}> {!isCollapsed && (<h1>Tasks</h1>)} </MenuItem>
-                            <MenuItem icon={<HttpIcon />} component={<Link to="/proxies" />}>  {!isCollapsed && (<h1>Proxie</h1>)} </MenuItem>
-                            <MenuItem icon={<MonetizationOnIcon />} component={<Link to="/billing" />}> {!isCollapsed && (<h1>Billing</h1>)} </MenuItem>
-                        </Box>
-                    </Menu>
-                    <main>
+                    <Box paddingLeft={isCollapsed ? undefined : "5%"}>
+                        <MenuItem title="Tasks" icon={<AssignmentIcon />} component={<Link to="/" />}> {!isCollapsed && (<h1>Tasks</h1>)} </MenuItem>
+                        <MenuItem icon={<HttpIcon />} component={<Link to="/proxies" />}>  {!isCollapsed && (<h1>Proxie</h1>)} </MenuItem>
+                        <MenuItem icon={<MonetizationOnIcon />} component={<Link to="/billing" />}> {!isCollapsed && (<h1>Billing</h1>)} </MenuItem>
+                    </Box>
+                </Menu>
 
-
-                    </main>
-                </Sidebar>
-            </div>
-        </Box>
+            </Sidebar>
+        </div>
     )
 
 }
