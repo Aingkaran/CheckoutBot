@@ -4,77 +4,99 @@ import { Box, IconButton, Typography, useTheme, Button, TextField } from '@mui/m
 import "./style.css"
 import SearchIcon from '@mui/icons-material/Search';
 import Search from '@mui/icons-material/Search';
-
+import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 const Tasks = () => {
     const columns = [
         { field: 'id', headerName: 'ID', width: 90 },
         {
-            field: 'firstName',
-            headerName: 'First name',
+            field: 'site',
+            headerName: 'Site',
             width: 150,
-            editable: true,
+            editable: false,
         },
         {
-            field: 'lastName',
-            headerName: 'Last name',
+            field: 'sizes',
+            headerName: 'Size',
             width: 150,
-            editable: true,
+            editable: false,
         },
         {
-            field: 'age',
-            headerName: 'Age',
-            type: 'number',
+            field: 'proxy',
+            headerName: 'Proxy List',
             width: 110,
             editable: true,
         },
         {
-            field: 'fullName',
-            headerName: 'Full name',
-            description: 'This column has a value getter and is not sortable.',
-            sortable: false,
-            width: 160,
-            valueGetter: (params) =>
-                `${params.row.firstName || ''} ${params.row.lastName || ''}`,
+            field: 'status',
+            headerName: 'Status',
+            width: 110,
+
         },
+        {
+            field: 'action',
+            headerName: 'Action',
+            width: 80,
+            renderCell: (cellValues) => {
+                return (
+                    <div>
+                        <PlayCircleFilledIcon className="actionButton" style={{ color: '#009788' }} onClick={() => console.log("works")} />
+                        <EditIcon className="actionButton" style={{ color: 'black' }} />
+                        <DeleteIcon className="actionButton" style={{ color: 'red' }} />
+                    </div>
+
+                )
+            }
+        },
+        // {
+        //     field: 'fullName',
+        //     headerName: 'Full name',
+        //     description: 'This column has a value getter and is not sortable.',
+        //     sortable: false,
+        //     width: 160,
+        //     valueGetter: (params) =>
+        //         `${params.row.firstName || ''} ${params.row.lastName || ''}`,
+        // },
     ];
 
     const rows = [
-        { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-        { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-        { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-        { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-        { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-        { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-        { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-        { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-        { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
+        { id: 1, site: 'Footlocker', sizes: '9.0', proxy: 'smartProxy', status: 'In Progress' },
+        { id: 2, site: 'Footlocker', sizes: '9.0', proxy: 'smartProxy', status: 'In Progress' },
+        { id: 3, site: 'Footlocker', sizes: '9.0', proxy: 'smartProxy', status: 'In Progress' },
+        { id: 4, site: 'Footlocker', sizes: '9.0', proxy: 'smartProxy', status: 'In Progress' },
+        { id: 5, site: 'Footlocker', sizes: '9.0', proxy: 'smartProxy', status: 'In Progress' },
+        { id: 6, site: 'Footlocker', sizes: '9.0', proxy: 'smartProxy', status: 'In Progress' },
+        { id: 7, site: 'Footlocker', sizes: '9.0', proxy: 'smartProxy', status: 'In Progress' },
+        { id: 8, site: 'Footlocker', sizes: '9.0', proxy: 'smartProxy', status: 'In Progress' },
+        { id: 9, site: 'Footlocker', sizes: '9.0', proxy: 'smartProxy', status: 'In Progress' },
     ];
 
 
     return (
-        <div class="task-container">
-            <div class="topRow">
-                <div class="topRow-leftSide">
-                    <Button size="small" variant="contained">Task Creator +</Button>
-                    <Button size="small" variant="contained">Clear All Tasks -</Button>
+        <div className="task-container">
+            <div className="topRow">
+                <div className="topRow-leftSide">
+                    <Button size="small" variant="contained" style={{ backgroundColor: '#009788' }}>New Task</Button>
+                    <Button size="small" variant="contained" style={{ backgroundColor: 'red' }}>Clear Selected</Button>
                 </div>
-                <div class="topRow-rightSide">
-                    <Button size="small" variant="contained">Import</Button>
-                    <Button size="small" variant="contained">Export</Button>
+                <div className="topRow-rightSide">
+                    <Button size="small" variant="contained" style={{ backgroundColor: 'grey' }}>Import</Button>
+                    <Button size="small" variant="contained" style={{ backgroundColor: 'grey' }}>Export</Button>
                 </div>
             </div>
-            <div class="middleRow">
-                <div class="middleRow-leftSide">
+            <div className="middleRow">
+                <div className="middleRow-leftSide">
                     <div style={{ display: "flex", alignItems: "center" }}>
                         <Search style={{ color: "black" }} />
                         <input style={{ width: "25vw" }} />
                     </div>
 
                 </div>
-                <div class="middleRow-rightSide">
-                    <Button size="small" variant="contained" >Edit All</Button>
-                    <Button size="small" variant="contained">Stop All</Button>
-                    <Button size="small" variant="contained">Start All</Button>
+                <div className="middleRow-rightSide">
+                    <Button size="small" variant="contained" style={{ backgroundColor: 'grey' }}>Edit All</Button>
+                    <Button size="small" variant="contained" style={{ backgroundColor: 'red' }}>Stop All</Button>
+                    <Button size="small" variant="contained" style={{ backgroundColor: '#009788' }}>Start All</Button>
                 </div>
             </div>
 
@@ -92,9 +114,7 @@ const Tasks = () => {
                         color: 'black',
                         border: 2,
                         borderColor: 'black',
-                        '& .MuiDataGrid-cell:hover': {
-                            color: 'white',
-                        },
+
                     }}
                 />
             </Box>
