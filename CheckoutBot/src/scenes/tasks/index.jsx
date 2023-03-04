@@ -49,15 +49,7 @@ const Tasks = () => {
                 )
             }
         },
-        // {
-        //     field: 'fullName',
-        //     headerName: 'Full name',
-        //     description: 'This column has a value getter and is not sortable.',
-        //     sortable: false,
-        //     width: 160,
-        //     valueGetter: (params) =>
-        //         `${params.row.firstName || ''} ${params.row.lastName || ''}`,
-        // },
+
     ];
 
     const rows = [
@@ -74,15 +66,15 @@ const Tasks = () => {
 
 
     return (
-        <div className="task-container">
+        <Box className="task-container">
             <div className="topRow">
                 <div className="topRow-leftSide">
-                    <Button size="small" variant="contained" style={{ backgroundColor: '#009788' }}>New Task</Button>
+                    <Button size="small" variant="contained" >New Task</Button>
                     <Button size="small" variant="contained" style={{ backgroundColor: 'red' }}>Clear Selected</Button>
                 </div>
                 <div className="topRow-rightSide">
-                    <Button size="small" variant="contained" style={{ backgroundColor: 'grey' }}>Import</Button>
-                    <Button size="small" variant="contained" style={{ backgroundColor: 'grey' }}>Export</Button>
+                    <Button size="small" variant="contained" color="other">Import</Button>
+                    <Button size="small" variant="contained" color="other">Export</Button>
                 </div>
             </div>
             <div className="middleRow">
@@ -94,9 +86,9 @@ const Tasks = () => {
 
                 </div>
                 <div className="middleRow-rightSide">
-                    <Button size="small" variant="contained" style={{ backgroundColor: 'grey' }}>Edit All</Button>
-                    <Button size="small" variant="contained" style={{ backgroundColor: 'red' }}>Stop All</Button>
-                    <Button size="small" variant="contained" style={{ backgroundColor: '#009788' }}>Start All</Button>
+                    <Button size="small" variant="contained" color="other">Edit All</Button>
+                    <Button size="small" variant="contained" color="negative">Stop All</Button>
+                    <Button size="small" variant="contained" >Start All</Button>
                 </div>
             </div>
 
@@ -120,7 +112,7 @@ const Tasks = () => {
             </Box>
 
 
-        </div >
+        </Box >
 
     )
 

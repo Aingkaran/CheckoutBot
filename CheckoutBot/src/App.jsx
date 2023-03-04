@@ -13,7 +13,7 @@ function App() {
   return (
     <div className="container" style={{ display: 'flex', height: "100vh" }}>
       <SidebarGlobal />
-      <main style={{ width: '100vw', margin: '2rem' }}>
+      <main style={{ width: '100vw', margin: '2rem'}}>
         <Routes class="content">
           <Route path="/" element={<Tasks />} />
           <Route path="/billing" element={<Billing />} />

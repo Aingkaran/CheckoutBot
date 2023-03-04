@@ -7,13 +7,11 @@
 .billingRightContainer {
     display: flex;
     flex-direction: column;
-    border-left-color: black;
-    background-color: red;
+
 
 }
 
 .billingLeftContainer {
     display: flex;
     flex-direction: column;
-    background-color: red;
 }
