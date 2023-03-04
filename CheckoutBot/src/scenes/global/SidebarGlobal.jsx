@@ -9,6 +9,8 @@ import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import HttpIcon from '@mui/icons-material/Http';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+
 
 const SidebarGlobal = () => {
     const { collapseSidebar, toggleSidebar, collapsed, toggled, broken, rtl } = useProSidebar();
@@ -51,6 +53,8 @@ const SidebarGlobal = () => {
                         <MenuItem title="Tasks" icon={<AssignmentIcon />} component={<Link to="/" />}> {!isCollapsed && (<h1>Tasks</h1>)} </MenuItem>
                         <MenuItem icon={<HttpIcon />} component={<Link to="/proxies" />}>  {!isCollapsed && (<h1>Proxie</h1>)} </MenuItem>
                         <MenuItem icon={<MonetizationOnIcon />} component={<Link to="/billing" />}> {!isCollapsed && (<h1>Billing</h1>)} </MenuItem>
+                        <MenuItem icon={<AccountCircleIcon />} component={<Link to="/account" />}> {!isCollapsed && (<h1>Account</h1>)} </MenuItem>
+
                     </Box>
                 </Menu>
 
