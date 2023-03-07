@@ -78,13 +78,18 @@ const Billing = () => {
                 display: "flex",
                 flexDirection: { xs: "column", md: "row" },
                 gap: '4rem'
+
             }}>
             <Box
                 className='billingLeftContainer'
                 sx={{
                     display: "flex",
                     flexDirection: "column",
-                    alignItems: "center"
+                    alignItems: "center",
+                    borderRight: 2,
+                    height: '90vh',
+                    borderColor: 'neutral.main',
+                    paddingRight: "3rem"
                 }}>
 
                 <Cards
@@ -101,6 +106,7 @@ const Billing = () => {
                             flexDirection: "column",
                             gap: "0.5rem",
                             mt: "1rem"
+
                         }}>
                         <TextField
                             type="number"
