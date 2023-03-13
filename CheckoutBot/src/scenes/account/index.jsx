@@ -7,7 +7,72 @@ import { Input, TextField, Button, Typography } from '@mui/material';
 import { BorderColor } from '@mui/icons-material';
 
 const Account = () => {
+    const [loginValues, setLoginValues] = useState({ email: "", password: "" });
+    const [registerValues, setRegisterValues] = useState({ username: "", email: "", phonenumber: "", password: "" });
 
+    const handleLoginChange = (e) => {
+        const { name, value } = e.target;
+        setLoginValues((prevValues) => ({
+            ...prevValues,
+            [name]: value
+        }));
+    };
+
+    const handleRegisterChange = (e) => {
+        const { name, value } = e.target;
+        setRegisterValues((prevValues) => ({
+            ...prevValues,
+            [name]: value
+        }));
+    };
+
+    const handleLoginSubmit = async (e) => {
+        e.preventDefault();
+        // handle login form submission
+        console.log(loginValues);
+
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                "email": loginValues.email,
+                "password": loginValues.password
+            })
+        };
+
+        try {
+            const response = await fetch('http://localhost:5000/user/login', requestOptions);
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const handleRegisterSubmit = async (e) => {
+        e.preventDefault();
+        // handle register form submission
+        console.log(registerValues);
+
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                "email": registerValues.email,
+                "name": registerValues.username,
+                "phonenumber": registerValues.phonenumber,
+                "password": registerValues.password
+            })
+        };
+
+        try {
+            const response = await fetch('http://localhost:5000/user/register', requestOptions);
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
     return (
         <Box sx={{
             display: "flex",
@@ -16,7 +81,7 @@ const Account = () => {
 
 
         }}>
-            <form>
+            <form onSubmit={handleLoginSubmit}>
                 <Box sx={{
                     display: "flex",
                     flexDirection: "column",
@@ -31,15 +96,19 @@ const Account = () => {
                         placeholder="email"
                         label="Email"
                         variant="outlined"
-                        id="outlined-basic" />
+                        id="outlined-basic"
+                        value={loginValues.email}
+                        onChange={handleLoginChange} />
                     <TextField
                         type="password"
                         name="password"
                         placeholder="Password"
                         label="Password"
                         variant="outlined"
-                        id="outlined-basic" />
-                    <Button size="large" variant="contained" color="primary">LOGIN</Button>
+                        id="outlined-basic"
+                        value={loginValues.password}
+                        onChange={handleLoginChange} />
+                    <Button type="submit" size="large" variant="contained" color="primary">LOGIN</Button>
 
                 </Box>
             </form>
@@ -48,7 +117,7 @@ const Account = () => {
                 height: '75vh',
                 borderColor: 'neutral.main'
             }}></Box>
-            <form>
+            <form onSubmit={handleRegisterSubmit}>
 
                 <Box sx={{
                     display: "flex",
@@ -63,22 +132,38 @@ const Account = () => {
                         placeholder="Username"
                         label="Username"
                         variant="outlined"
-                        id="outlined-basic" />
+                        id="outlined-basic"
+                        value={registerValues.username}
+                        onChange={handleRegisterChange} />
                     <TextField
                         type="email"
                         name="email"
                         placeholder="email"
                         label="Email"
                         variant="outlined"
-                        id="outlined-basic" />
+                        id="outlined-basic"
+                        value={registerValues.email}
+                        onChange={handleRegisterChange} />
+
+                    <TextField
+                        type="phonenumber"
+                        name="phonenumber"
+                        placeholder="Phone Number..."
+                        label="Phone Number"
+                        variant="outlined"
+                        id="outlined-basic"
+                        value={registerValues.phonenumber}
+                        onChange={handleRegisterChange} />
                     <TextField
                         type="password"
                         name="password"
                         placeholder="Password"
                         label="Password"
                         variant="outlined"
-                        id="outlined-basic" />
-                    <Button size="large" variant="contained" color="primary">SIGN UP</Button>
+                        id="outlined-basic"
+                        value={registerValues.password}
+                        onChange={handleRegisterChange} />
+                    <Button type="submit" size="large" variant="contained" color="primary">SIGN UP</Button>
 
                 </Box>
             </form>

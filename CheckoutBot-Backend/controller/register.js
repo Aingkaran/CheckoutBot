@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const client = require("../config/database");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
+require("dotenv").config();
 
 const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -35,10 +36,29 @@ exports.register = async (req, res) => {
                     },
                     process.env.SECRET_KEY
                 );
-                res.status(200).json({
-                    message: 'User added to database, not verified',
-                    token
+
+                const mailOptions = {
+                    from: process.env.EMAIL_USER,
+                    to: user.email,
+                    subject: 'Verify your email',
+                    html: `<p>Thank you for registering with our website!</p>`
+                };
+
+                transporter.sendMail(mailOptions, (error, info) => {
+                    if (error) {
+                        console.error(error);
+                        return res.status(500).json({
+                            error: "Error sending verification email"
+                        });
+                    } else {
+                        console.log("Verification email sent:", info.response);
+                        return res.status(200).json({
+                            message: "User added to database, verification email sent",
+                            token
+                        });
+                    }
                 });
+
             } catch (err) {
                 console.error(err);
                 return res.status(500).json({
