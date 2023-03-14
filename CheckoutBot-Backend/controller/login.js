@@ -4,7 +4,6 @@ const client = require("../config/database");
 
 const jwt = require("jsonwebtoken");
 
-//Login Function
 exports.login = async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -25,12 +24,16 @@ exports.login = async (req, res) => {
                     const token = jwt.sign(
                         {
                             email: email,
+                            user_id: user[0].id // include user id in the token payload
+
                         },
                         process.env.SECRET_KEY
                     );
                     res.status(200).json({
                         message: "User signed in!",
                         token: token,
+                        user_id: user[0].id // include user id in the response
+
                     });
                 }
                 else {

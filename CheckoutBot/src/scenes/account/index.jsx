@@ -6,9 +6,11 @@ import { useForm } from "react-hook-form";
 import { Input, TextField, Button, Typography } from '@mui/material';
 import { BorderColor } from '@mui/icons-material';
 
-const Account = () => {
+const Account = (props) => {
+    const { updateUserID } = props
     const [loginValues, setLoginValues] = useState({ email: "", password: "" });
     const [registerValues, setRegisterValues] = useState({ username: "", email: "", phonenumber: "", password: "" });
+    const [userID, setUserID] = useState()
 
     const handleLoginChange = (e) => {
         const { name, value } = e.target;
@@ -43,6 +45,7 @@ const Account = () => {
         try {
             const response = await fetch('http://localhost:5000/user/login', requestOptions);
             const data = await response.json();
+            updateUserID(data.user_id)
             console.log(data);
         } catch (error) {
             console.error(error);
@@ -73,6 +76,7 @@ const Account = () => {
             console.error(error);
         }
     };
+
     return (
         <Box sx={{
             display: "flex",

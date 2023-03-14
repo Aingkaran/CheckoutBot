@@ -10,7 +10,13 @@ import Billing from "./scenes/billing/";
 import Account from "./scenes/account/";
 
 function App() {
+  const [userID, setUserID] = useState()
 
+  const updateUserID = (id) => {
+    setUserID(id)
+  }
+
+  console.log(userID)
   return (
     <div className="container" style={{ display: 'flex', height: "100vh" }}>
       <SidebarGlobal />
@@ -19,7 +25,7 @@ function App() {
           <Route path="/" element={<Tasks />} />
           <Route path="/billing" element={<Billing />} />
           <Route path="/proxies" element={<Proxies />} />
-          <Route path="/account" element={<Account />} />
+          <Route path="/account" element={<Account updateUserID={updateUserID} />} />
         </Routes>
       </main>
     </div>
