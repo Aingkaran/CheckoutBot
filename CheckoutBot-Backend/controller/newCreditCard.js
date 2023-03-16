@@ -10,6 +10,7 @@ const key = Buffer.from(process.env.ENCRYPTION_KEY, 'hex'); // this should be se
 const iv = crypto.randomBytes(16);
 
 const encrypt = (data) => {
+
     const cipher = crypto.createCipheriv(algorithm, key, iv);
     let encrypted = cipher.update(data, 'utf8', 'hex');
     encrypted += cipher.final('hex');
@@ -19,12 +20,7 @@ const encrypt = (data) => {
     };
 };
 
-const decrypt = (hash) => {
-    const decipher = crypto.createDecipheriv(algorithm, key, Buffer.from(hash.iv, 'hex'));
-    let decrypted = decipher.update(hash.data, 'hex', 'utf8');
-    decrypted += decipher.final('utf8');
-    return decrypted;
-};
+
 
 exports.newCreditCard = async (req, res) => {
     const { user_id, cardUsername, cardFullName, cardNumber, expiry, cvs } = req.body;
@@ -41,7 +37,7 @@ exports.newCreditCard = async (req, res) => {
         );`
         );
         const hashedCardFullName = encrypt(cardFullName);
-        const hashedCardExpiry = encrypt(cardNumber);
+        const hashedCardExpiry = encrypt(cardNumber); N
         const hashedCardNumber = encrypt(expiry);
         const hashedCardCVS = encrypt(cvs);
         // console.log(hashedCardFullName)

@@ -20,19 +20,21 @@ exports.login = async (req, res) => {
                     res.status(500).json({
                         error: "Server error",
                     });
-                } else if (result === true) { //Checking if credentials match
+                } else if (result === true) {
                     const token = jwt.sign(
                         {
                             email: email,
-                            user_id: user[0].id // include user id in the token payload
-
+                            user_id: user[0].id,
                         },
-                        process.env.SECRET_KEY
+                        process.env.SECRET_KEY,
+                        {
+                            expiresIn: "1h",
+                        }
                     );
                     res.status(200).json({
                         message: "User signed in!",
                         token: token,
-                        user_id: user[0].id // include user id in the response
+                        user_id: user[0].id
 
                     });
                 }
