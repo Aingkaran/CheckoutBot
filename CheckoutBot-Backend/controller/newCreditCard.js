@@ -6,7 +6,7 @@ const crypto = require('crypto');
 require("dotenv").config();
 
 const algorithm = 'aes-256-cbc';
-const key = Buffer.from(process.env.ENCRYPTION_KEY, 'hex'); // this should be set to a long, random string in your .env file
+const key = Buffer.from(process.env.ENCRYPTION_KEY, 'hex');
 const iv = crypto.randomBytes(16);
 
 const encrypt = (data) => {
@@ -31,19 +31,23 @@ exports.newCreditCard = async (req, res) => {
             user_id INTEGER REFERENCES users(id),
             card_username TEXT,
             card_fullname TEXT,
-            card_number TEXT,
+            card_number TEXT UNIQUE,
             card_expiry TEXT,
             card_cvv TEXT
         );`
         );
         const hashedCardFullName = encrypt(cardFullName);
-        const hashedCardExpiry = encrypt(cardNumber); N
+        const hashedCardExpiry = encrypt(cardNumber);
         const hashedCardNumber = encrypt(expiry);
+
         const hashedCardCVS = encrypt(cvs);
-        // console.log(hashedCardFullName)
-        // console.log(hashedCardExpiry)
-        // console.log(hashedCardNumber)
-        // console.log(hashedCardCVS)
+
+        const existingCard = await client.query(`SELECT * FROM credit_cards WHERE card_number = $1`, [hashedCardNumber]);
+
+        if (existingCard.rowCount > 0) {
+            return res.status(400).json({ error: "A card with this number already exists." });
+        }
+
         await client.query(`INSERT INTO credit_cards (user_id,card_username, card_fullname, card_number, card_expiry, card_cvv)
         VALUES ($1, $2, $3, $4, $5,$6)`, [user_id, cardUsername, hashedCardFullName, hashedCardNumber, hashedCardExpiry, hashedCardCVS]);
 

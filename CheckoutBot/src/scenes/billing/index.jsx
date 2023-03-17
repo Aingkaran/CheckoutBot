@@ -7,11 +7,14 @@ import { DataGrid } from '@mui/x-data-grid';
 import { useForm } from "react-hook-form";
 import { Input, TextField, Button } from '@mui/material';
 
-const Billing = () => {
+const Billing = (props) => {
+    const { userInfo } = props
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
     const onSubmit = data => console.log(data);
+    const authToken = localStorage.getItem("authToken");
 
-    const [state, setState] = useState({
+    const [cardInfo, setCardInfo] = useState({
+        customCardName: '',
         number: '',
         expiry: '',
         cvc: '',
@@ -19,16 +22,55 @@ const Billing = () => {
         focus: '',
     });
 
+
+
+
+    const addCreditCard = async (cardInfo) => {
+
+        const requestNewCredit = {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                "x-auth-token": localStorage.getItem("authToken")
+            },
+            body: JSON.stringify({
+                "user_id": userInfo.id,
+                "cardUsername": cardInfo.customCardName,
+                "cardFullName": cardInfo.name,
+                "cardNumber": cardInfo.number,
+                "expiry": cardInfo.expiry,
+                "cvs": cardInfo.cvc
+            })
+
+        };
+
+        console.log(requestNewCredit)
+        try {
+            const response = await fetch("http://localhost:5000/user/newCreditCard", requestNewCredit);
+
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.error);
+            }
+
+            console.log("Card added:", data);
+        } catch (error) {
+            console.error("Error adding card:", error.message);
+        }
+    };
+
     const handleInputChange = (evt) => {
         const { name, value } = evt.target;
-        console.log(evt.target)
+        console.log(evt.target.value)
 
-        setState((prev) => ({ ...prev, [name]: value }));
+        setCardInfo((prev) => ({ ...prev, [name]: value }));
     }
 
     const handleInputFocus = (evt) => {
-        setState((prev) => ({ ...prev, focus: evt.target.name }));
+        setCardInfo((prev) => ({ ...prev, focus: evt.target.name }));
     }
+
+
 
     const columns = [
         { field: 'id', headerName: 'ID', width: 50 },
@@ -70,7 +112,6 @@ const Billing = () => {
         { id: 7, cardName: 'Visa', cardNumber: "4326-8100-3242-3215", ownerName: 'Aingkaran Jegatheeswaran', cardLimit: '$2000' },
         { id: 8, cardName: 'Visa', cardNumber: "4326-8100-3242-3215", ownerName: 'Aingkaran Jegatheeswaran', cardLimit: '$2000' }
     ];
-
     return (
         <Box
 
@@ -79,7 +120,7 @@ const Billing = () => {
                 flexDirection: { xs: "column", md: "row" },
                 gap: '4rem'
 
-            }}>
+            }} >
             <Box
                 className='billingLeftContainer'
                 sx={{
@@ -93,11 +134,11 @@ const Billing = () => {
                 }}>
 
                 <Cards
-                    number={state.number}
-                    expiry={state.expiry}
-                    cvc={state.cvc}
-                    name={state.name}
-                    focused={state.focus}
+                    number={cardInfo.number}
+                    expiry={cardInfo.expiry}
+                    cvc={cardInfo.cvc}
+                    name={cardInfo.name}
+                    focused={cardInfo.focus}
                 />
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Box
@@ -109,10 +150,20 @@ const Billing = () => {
 
                         }}>
                         <TextField
+                            type="text"
+                            name="customCardName"
+                            placeholder="Custom Name"
+                            value={cardInfo.customCardName}
+                            onChange={handleInputChange}
+                            onFocus={handleInputFocus}
+                            label="Custom Name"
+                            variant="outlined"
+                            id="outlined-basic" />
+                        <TextField
                             type="number"
                             name="number"
                             placeholder="Card Number"
-                            value={state.number}
+                            value={cardInfo.number}
                             onChange={handleInputChange}
                             onFocus={handleInputFocus}
                             label="Card Number"
@@ -122,7 +173,7 @@ const Billing = () => {
                             type="name"
                             name="name"
                             placeholder="Full Name..."
-                            value={state.name}
+                            value={cardInfo.name}
                             onChange={handleInputChange}
                             onFocus={handleInputFocus}
                             label="Full Name"
@@ -134,7 +185,7 @@ const Billing = () => {
                             type="expiry"
                             name="expiry"
                             placeholder="MM/YY"
-                            value={state.expiry}
+                            value={cardInfo.expiry}
                             onChange={handleInputChange}
                             onFocus={handleInputFocus}
                             label="Expiry"
@@ -145,14 +196,14 @@ const Billing = () => {
                             type="cvc"
                             name="cvc"
                             placeholder="CVC"
-                            value={state.cvc}
+                            value={cardInfo.cvc}
                             onChange={handleInputChange}
                             onFocus={handleInputFocus}
                             label="CVS"
                             variant="outlined"
                             id="outlined-basic"
                         />
-                        <Button size="large" variant="contained" color="primary">ADD CARD</Button>
+                        <Button onClick={() => addCreditCard(cardInfo)} size="large" variant="contained" color="primary">ADD CARD</Button>
 
                     </Box>
                 </form>

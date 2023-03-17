@@ -14,11 +14,11 @@ const transporter = nodemailer.createTransport({
 exports.register = async (req, res) => {
     const { name, email, phonenumber, password } = req.body;
     try {
-        const data = await client.query(`SELECT * FROM users WHERE email= $1;`, [email]);
+        const data = await client.query(`SELECT * FROM users WHERE email= $1 OR phonenumber= $2;`, [email, phonenumber]);
         const arr = data.rows;
         if (arr.length != 0) {
             return res.status(400).json({
-                error: "Email already there, No need to register again.",
+                error: "Email or phone number already exists. Please try again with different credentials.",
             });
         } else {
             const hash = await bcrypt.hash(password, 10);
