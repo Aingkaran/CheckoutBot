@@ -5,13 +5,20 @@ import './style.css'
 import { Container, Box } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { useForm } from "react-hook-form";
-import { Input, TextField, Button } from '@mui/material';
+import { Input, TextField, Button, Snackbar, Alert } from '@mui/material';
+import UserContext from '../../UserContext';
+import { useContext, useEffect } from "react";
 
 const Billing = (props) => {
-    const { userInfo } = props
+
+    const { userInfo, setUserInfo, loggedIn, setLoggedIn } = useContext(UserContext);
+
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
     const onSubmit = data => console.log(data);
-    const authToken = localStorage.getItem("authToken");
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+    const [creditCards, setCreditCards] = useState([]);
 
     const [cardInfo, setCardInfo] = useState({
         customCardName: '',
@@ -22,11 +29,43 @@ const Billing = (props) => {
         focus: '',
     });
 
+    const resetForm = () => {
+        setCardInfo({
+            customCardName: '',
+            number: '',
+            expiry: '',
+            cvc: '',
+            name: '',
+            focus: '',
+        });
+    };
+    const fetchCreditCards = async () => {
+        try {
+            const response = await fetch(`http://localhost:5000/user/creditcard/${userInfo.id}`, {
+                method: 'GET',
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-auth-token": localStorage.getItem("authToken")
+                },
+            });
 
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.error);
+            }
 
+            setCreditCards(data.creditCards);
+            console.log(data.creditCards)
+        } catch (error) {
+            console.error("Error fetching credit cards:", error.message);
+            setSnackbarMessage("Error fetching credit cards: " + error.message);
+            setSnackbarSeverity("error");
+            setSnackbarOpen(true);
+        }
+    };
 
-    const addCreditCard = async (cardInfo) => {
-
+    const addCreditCard = async () => {
+        resetForm()
         const requestNewCredit = {
             method: 'POST',
             headers: {
@@ -44,7 +83,6 @@ const Billing = (props) => {
 
         };
 
-        console.log(requestNewCredit)
         try {
             const response = await fetch("http://localhost:5000/user/newCreditCard", requestNewCredit);
 
@@ -52,11 +90,24 @@ const Billing = (props) => {
             if (!response.ok) {
                 throw new Error(data.error);
             }
-
-            console.log("Card added:", data);
+            fetchCreditCards()
+            setSnackbarMessage("Card added successfully!");
+            setSnackbarSeverity("success");
         } catch (error) {
             console.error("Error adding card:", error.message);
+            setSnackbarMessage("Error adding card: " + error.message);
+            setSnackbarSeverity("error");
+        } finally {
+            setSnackbarOpen(true);
         }
+    };
+
+    const handleSnackbarClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setSnackbarOpen(false);
     };
 
     const handleInputChange = (evt) => {
@@ -77,7 +128,7 @@ const Billing = (props) => {
         {
             field: 'cardName',
             headerName: 'Card Name',
-            width: 100,
+            width: 150,
             editable: false,
         },
         {
@@ -92,26 +143,26 @@ const Billing = (props) => {
             headerName: 'Owner Name',
             width: 150,
             editable: false,
-        },
-        {
-            field: 'cardLimit',
-            headerName: 'Card Limit',
-            width: 110,
-            editable: true,
         }
 
     ];
+    const rows = creditCards.map((card, index) => ({
+        id: index + 1,
+        cardName: card.card_username,
+        cardNumber: maskCreditCard(card.card_number),
+        ownerName: card.card_fullname,
+    }));
 
-    const rows = [
-        { id: 1, cardName: 'Visa', cardNumber: "4326-8100-3242-3215", ownerName: 'Aingkaran Jegatheeswaran', cardLimit: '$2000' },
-        { id: 2, cardName: 'Visa', cardNumber: "4326-8100-3242-3215", ownerName: 'Aingkaran Jegatheeswaran', cardLimit: '$2000' },
-        { id: 3, cardName: 'Visa', cardNumber: "4326-8100-3242-3215", ownerName: 'Aingkaran Jegatheeswaran', cardLimit: '$2000' },
-        { id: 4, cardName: 'Visa', cardNumber: "4326-8100-3242-3215", ownerName: 'Aingkaran Jegatheeswaran', cardLimit: '$2000' },
-        { id: 5, cardName: 'Visa', cardNumber: "4326-8100-3242-3215", ownerName: 'Aingkaran Jegatheeswaran', cardLimit: '$2000' },
-        { id: 6, cardName: 'Visa', cardNumber: "4326-8100-3242-3215", ownerName: 'Aingkaran Jegatheeswaran', cardLimit: '$2000' },
-        { id: 7, cardName: 'Visa', cardNumber: "4326-8100-3242-3215", ownerName: 'Aingkaran Jegatheeswaran', cardLimit: '$2000' },
-        { id: 8, cardName: 'Visa', cardNumber: "4326-8100-3242-3215", ownerName: 'Aingkaran Jegatheeswaran', cardLimit: '$2000' }
-    ];
+    useEffect(() => {
+        fetchCreditCards();
+    }, []);
+
+    function maskCreditCard(number, showDigits = 4) {
+        const length = number.length;
+        const masked = number.slice(0, showDigits).padEnd(length, '*');
+        return masked;
+    }
+
     return (
         <Box
 
@@ -140,7 +191,7 @@ const Billing = (props) => {
                     name={cardInfo.name}
                     focused={cardInfo.focus}
                 />
-                <form onSubmit={handleSubmit(onSubmit)}>
+                <form onSubmit={handleSubmit(() => addCreditCard(cardInfo))}>
                     <Box
                         sx={{
                             display: "flex",
@@ -158,7 +209,8 @@ const Billing = (props) => {
                             onFocus={handleInputFocus}
                             label="Custom Name"
                             variant="outlined"
-                            id="outlined-basic" />
+                            id="outlined-basic"
+                            required />
                         <TextField
                             type="number"
                             name="number"
@@ -168,7 +220,8 @@ const Billing = (props) => {
                             onFocus={handleInputFocus}
                             label="Card Number"
                             variant="outlined"
-                            id="outlined-basic" />
+                            id="outlined-basic"
+                            required />
                         <TextField
                             type="name"
                             name="name"
@@ -179,7 +232,7 @@ const Billing = (props) => {
                             label="Full Name"
                             variant="outlined"
                             id="outlined-basic"
-
+                            required
                         />
                         <TextField
                             type="expiry"
@@ -191,6 +244,7 @@ const Billing = (props) => {
                             label="Expiry"
                             variant="outlined"
                             id="outlined-basic"
+                            required
                         />
                         <TextField
                             type="cvc"
@@ -202,15 +256,26 @@ const Billing = (props) => {
                             label="CVS"
                             variant="outlined"
                             id="outlined-basic"
+                            required
                         />
-                        <Button onClick={() => addCreditCard(cardInfo)} size="large" variant="contained" color="primary">ADD CARD</Button>
+                        <Button type="submit" size="large" variant="contained" color="primary">ADD CARD</Button>
+                        <Snackbar
+                            open={snackbarOpen}
+                            autoHideDuration={5000}
+                            onClose={handleSnackbarClose}
+                            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                        >
+                            <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} variant="filled">
+                                {snackbarMessage}
+                            </Alert>
+                        </Snackbar>
 
                     </Box>
                 </form>
 
 
             </Box>
-            <div className="billingRightContainer" style={{ height: 350, width: '100%', gap: "1rem" }}>
+            <div className="billingRightContainer" style={{ height: '90vh', width: '100%', gap: "1rem" }}>
                 <Box sx={{
                     display: "flex",
                     gap: "0.5rem"

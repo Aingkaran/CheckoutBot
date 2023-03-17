@@ -1,6 +1,9 @@
-const userprofile = (props) => {
-    const { userInfo, loggedIn, loginToggle } = props
+import UserContext from '../../UserContext';
+import { useState, useContext } from "react";
 
+const userprofile = (props) => {
+    const { userInfo, setUserInfo, loggedIn, setLoggedIn } = useContext(UserContext);
+    const { loginToggle } = props;
     return (
         <>
 

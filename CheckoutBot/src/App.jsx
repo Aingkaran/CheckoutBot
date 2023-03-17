@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import "./App.css";
 import Button from '@mui/material/Button';
@@ -8,9 +8,9 @@ import Proxies from "./scenes/proxies";
 import { Routes, Route } from "react-router-dom";
 import Billing from "./scenes/billing/";
 import Account from "./scenes/account/";
+import UserContext from './UserContext';
 
 function App() {
-  const [userID, setUserID] = useState()
   const [loggedIn, setLoggedIn] = useState(false);
   const [userInfo, setUserInfo] = useState({
     id: "",
@@ -19,19 +19,22 @@ function App() {
   })
 
 
-
   return (
-    <div className="container" style={{ display: 'flex', height: "100vh" }}>
-      <SidebarGlobal />
-      <main style={{ width: '100vw', margin: '2rem' }}>
-        <Routes class="content">
-          <Route path="/" element={<Tasks userInfo={userInfo} />} />
-          <Route path="/billing" element={<Billing userInfo={userInfo} />} />
-          <Route path="/proxies" element={<Proxies userInfo={userInfo} />} />
-          <Route path="/account" element={<Account loggedIn={loggedIn} setLoggedIn={setLoggedIn} userInfo={userInfo} setUserInfo={setUserInfo} />} />
-        </Routes>
-      </main>
-    </div>
+    <UserContext.Provider value={{ userInfo, setUserInfo, loggedIn, setLoggedIn }}>
+
+      <div className="container" style={{ display: 'flex', height: "100vh" }}>
+        <SidebarGlobal />
+        <main style={{ width: '100vw', margin: '2rem' }}>
+          <Routes class="content">
+            <Route path="/" element={<Tasks />} />
+            <Route path="/billing" element={<Billing />} />
+            <Route path="/proxies" element={<Proxies />} />
+            <Route path="/account" element={<Account />} />
+          </Routes>
+        </main>
+      </div>
+    </UserContext.Provider>
+
   );
 }
 

@@ -37,8 +37,8 @@ exports.newCreditCard = async (req, res) => {
         );`
         );
         const hashedCardFullName = encrypt(cardFullName);
-        const hashedCardExpiry = encrypt(cardNumber);
-        const hashedCardNumber = encrypt(expiry);
+        const hashedCardExpiry = encrypt(expiry);
+        const hashedCardNumber = encrypt(cardNumber);
 
         const hashedCardCVS = encrypt(cvs);
 
@@ -48,10 +48,12 @@ exports.newCreditCard = async (req, res) => {
             return res.status(400).json({ error: "A card with this number already exists." });
         }
 
-        await client.query(`INSERT INTO credit_cards (user_id,card_username, card_fullname, card_number, card_expiry, card_cvv)
+        else {
+            await client.query(`INSERT INTO credit_cards (user_id,card_username, card_fullname, card_number, card_expiry, card_cvv)
         VALUES ($1, $2, $3, $4, $5,$6)`, [user_id, cardUsername, hashedCardFullName, hashedCardNumber, hashedCardExpiry, hashedCardCVS]);
 
-        res.status(201).json({ message: 'Credit card added successfully' })
+            res.status(201).json({ message: 'Credit card added successfully' })
+        }
 
     } catch (err) {
         console.error(err);

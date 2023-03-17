@@ -6,13 +6,15 @@ import { useForm } from "react-hook-form";
 import { Input, TextField, Button, Typography } from '@mui/material';
 import { BorderColor } from '@mui/icons-material';
 import UserProfile from '../userprofile';
+import UserContext from '../../UserContext';
+import { useContext } from "react";
 
 
 const Account = (props) => {
-    const { loggedIn, setLoggedIn, userInfo, setUserInfo } = props
     const [loginValues, setLoginValues] = useState({ email: "", password: "" });
     const [registerValues, setRegisterValues] = useState({ username: "", email: "", phonenumber: "", password: "" });
     const [loginError, setLoginError] = useState({ visible: false, message: "" });
+    const { userInfo, setUserInfo, loggedIn, setLoggedIn } = useContext(UserContext);
 
     const [userID, setUserID] = useState()
     const [registerConfirmation, setRegisterConfirmation] = useState({ visible: false, message: "" });
@@ -74,7 +76,6 @@ const Account = (props) => {
 
     const handleRegisterSubmit = async (e) => {
         e.preventDefault();
-        // handle register form submission
         console.log(registerValues);
 
         const requestOptions = {
