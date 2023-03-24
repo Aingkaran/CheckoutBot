@@ -7,6 +7,6 @@ const client = new Pool({
     dbname: process.env.DB_DBNAME,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD
-}); //Configuring PostgresSQL Database
+});
 
 module.exports = client;

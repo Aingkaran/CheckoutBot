@@ -66,8 +66,8 @@ const Tasks = () => {
 
 
     return (
-        <Box className="task-container">
-            <div className="topRow">
+        <Box className="task-container" sx={{ maxWidth: '800px', minWidth: '650px' }}>
+            <Box className="topRow" >
                 <div className="topRow-leftSide">
                     <Button size="small" variant="contained" >New Task</Button>
                     <Button size="small" variant="contained" style={{ backgroundColor: 'red' }}>Clear Selected</Button>
@@ -76,12 +76,12 @@ const Tasks = () => {
                     <Button size="small" variant="contained" color="other">Import</Button>
                     <Button size="small" variant="contained" color="other">Export</Button>
                 </div>
-            </div>
+            </Box>
             <div className="middleRow">
                 <div className="middleRow-leftSide">
                     <div style={{ display: "flex", alignItems: "center" }}>
                         <Search style={{ color: "black" }} />
-                        <input style={{ width: "25vw" }} />
+                        <input sx={{ width: "25vw", maxWidth: '800px', minWidth: '150px' }} />
                     </div>
 
                 </div>
@@ -92,7 +92,7 @@ const Tasks = () => {
                 </div>
             </div>
 
-            <Box sx={{ height: 400, width: '100%' }}>
+            <Box sx={{ height: 400 }}>
                 <DataGrid
                     rows={rows}
                     columns={columns}

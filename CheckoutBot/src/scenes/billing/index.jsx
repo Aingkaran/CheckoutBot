@@ -290,7 +290,6 @@ const Billing = (props) => {
                     pageSize={10}
                     rowsPerPageOptions={[10]}
                     checkboxSelection
-                    autoHeight
                     disableSelectionOnClick
                     experimentalFeatures={{ newEditingApi: true }}
                     sx={{

@@ -3,7 +3,6 @@ const client = require("../config/database");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const crypto = require('crypto');
-require("dotenv").config();
 
 const algorithm = 'aes-256-cbc';
 const key = Buffer.from(process.env.ENCRYPTION_KEY, 'hex');
