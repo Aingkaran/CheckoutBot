@@ -19,7 +19,7 @@ const Proxies = () => {
     ];
 
 
-    const formatProxies = (proxies) => {
+    const formatProxies = async (proxies) => {
         const newRows = proxies.map((proxy, index) => {
             const [address, port, username, password] = proxy.split(':');
             return {
@@ -31,6 +31,7 @@ const Proxies = () => {
             };
         });
         setRows(newRows);
+
     };
 
 
@@ -55,6 +56,8 @@ const Proxies = () => {
 
             const result = await response.json();
             console.log(result);
+            return result
+
         } catch (error) {
             console.error('Error:', error);
         }
@@ -80,13 +83,15 @@ const Proxies = () => {
         setProxyString(event.target.value);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const proxyList = proxyString.split('\n').map((proxyString) => {
             const [address, port, username, password] = proxyString.split(':');
             return { address, port, username, password };
         });
-        addProxies(proxyList);
+        await addProxies(proxyList);
+        await fetchProxies();
+
     };
 
     const fetchProxies = async () => {
@@ -116,7 +121,6 @@ const Proxies = () => {
 
     useEffect(() => {
         formatProxies(proxies);
-        fetchProxies();
 
     }, [proxies]);
 
