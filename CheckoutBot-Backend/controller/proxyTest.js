@@ -1,0 +1,33 @@
+
+exports.proxyTest = async (req, res) => {
+    const proxyList = req.body.proxies;
+    const testUrl = 'https://httpbin.org/ip';
+    const results = [];
+
+    for (const proxy of proxyList) {
+        const { address, port, username, password } = proxy;
+        const proxyUrl = `http://${username}:${password}@${address}:${port}`;
+        const agent = new HttpProxyAgent(proxyUrl);
+
+        try {
+            const startTime = Date.now();
+            const response = await fetch(testUrl, { agent });
+            const endTime = Date.now();
+            const responseTime = endTime - startTime;
+
+            if (response.ok) {
+                const jsonResponse = await response.json();
+                console.log(`Proxy ${proxyUrl} is working, IP: ${jsonResponse.origin}, response time: ${responseTime} ms`);
+                results.push({ proxy, status: 'working', ip: jsonResponse.origin, responseTime });
+            } else {
+                console.log(`Proxy ${proxyUrl} is not working, status: ${response.status}`);
+                results.push({ proxy, status: 'not working', responseTime });
+            }
+        } catch (error) {
+            console.error(`Error testing proxy ${proxyUrl}:`, error);
+            results.push({ proxy, status: 'error', error });
+        }
+    }
+
+    res.json({ results });
+};

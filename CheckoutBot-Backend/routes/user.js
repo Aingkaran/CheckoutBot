@@ -9,6 +9,7 @@ const { newCreditCard } = require("../controller/newCreditCard");
 const { getCreditCard } = require("../controller/getCreditCard");
 const { verifyToken } = require("../controller/authMiddleware");
 const { addProxy } = require("../controller/addProxy");
+const { proxyTest } = require("../controller/proxyTest");
 
 
 const { getProxyList } = require("../controller/getProxyList")
@@ -21,6 +22,7 @@ router.post('/newCreditCard', verifyToken, newCreditCard);
 router.get('/creditcard/:user_id', verifyToken, getCreditCard)
 router.post('/proxy', verifyToken, addProxy);
 router.get('/proxy/:user_id', verifyToken, getProxyList);
+router.post('/testproxy', verifyToken, proxyTest);
 
 
 module.exports = router;

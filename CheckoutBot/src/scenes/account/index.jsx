@@ -38,7 +38,6 @@ const Account = (props) => {
 
     const handleLoginSubmit = async (e) => {
         e.preventDefault();
-        // handle login form submission
         console.log(loginValues);
 
         const requestOptions = {

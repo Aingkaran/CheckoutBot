@@ -124,7 +124,26 @@ const Proxies = () => {
 
     }, [proxies]);
 
-    console.log(rows)
+    const testAllProxies = async () => {
+        console.log("testing")
+        const response = await fetch(`http://localhost:5000/user/proxyTest/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                "x-auth-token": localStorage.getItem("authToken")
+            },
+            body: JSON.stringify({ proxies: rows }),
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            console.log(result);
+        } else {
+            console.error('Error testing proxies:', response.status);
+        }
+    };
+
+
     return (
         <>
             <Box
@@ -179,7 +198,7 @@ const Proxies = () => {
                         display: "flex",
                         gap: "0.5rem"
                     }}>
-                        <Button size="medium" variant="contained" color="negative">Test All</Button>
+                        <Button onClick={testAllProxies} size="medium" variant="contained" color="negative">Test All</Button>
                         <Button size="medium" variant="contained" color="primary">Delete Card</Button>
 
                     </Box>
