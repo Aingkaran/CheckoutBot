@@ -22,7 +22,7 @@ router.post('/newCreditCard', verifyToken, newCreditCard);
 router.get('/creditcard/:user_id', verifyToken, getCreditCard)
 router.post('/proxy', verifyToken, addProxy);
 router.get('/proxy/:user_id', verifyToken, getProxyList);
-router.post('/testproxy', verifyToken, proxyTest);
+router.post('/proxytest', verifyToken, proxyTest);
 
 
 module.exports = router;

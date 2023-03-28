@@ -126,7 +126,7 @@ const Proxies = () => {
 
     const testAllProxies = async () => {
         console.log("testing")
-        const response = await fetch(`http://localhost:5000/user/proxyTest/`, {
+        const response = await fetch(`http://localhost:5000/user/proxytest/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

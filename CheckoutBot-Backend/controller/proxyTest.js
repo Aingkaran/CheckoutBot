@@ -1,3 +1,5 @@
+const HttpProxyAgent = require('http-proxy-agent');
+const axios = require('axios');
 
 exports.proxyTest = async (req, res) => {
     const proxyList = req.body.proxies;
@@ -11,12 +13,12 @@ exports.proxyTest = async (req, res) => {
 
         try {
             const startTime = Date.now();
-            const response = await fetch(testUrl, { agent });
+            const response = await axios.get(testUrl, { httpsAgent: agent });
             const endTime = Date.now();
             const responseTime = endTime - startTime;
 
-            if (response.ok) {
-                const jsonResponse = await response.json();
+            if (response.status === 200) {
+                const jsonResponse = response.data;
                 console.log(`Proxy ${proxyUrl} is working, IP: ${jsonResponse.origin}, response time: ${responseTime} ms`);
                 results.push({ proxy, status: 'working', ip: jsonResponse.origin, responseTime });
             } else {
