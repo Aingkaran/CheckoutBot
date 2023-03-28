@@ -1,4 +1,4 @@
-const HttpProxyAgent = require('http-proxy-agent');
+const HttpProxyAgent = require('https-proxy-agent');
 const axios = require('axios');
 
 exports.proxyTest = async (req, res) => {
@@ -13,7 +13,7 @@ exports.proxyTest = async (req, res) => {
 
         try {
             const startTime = Date.now();
-            const response = await axios.get(testUrl, { httpsAgent: agent });
+            const response = await axios.get(testUrl, { proxy: false, httpsAgent: agent });
             const endTime = Date.now();
             const responseTime = endTime - startTime;
 
