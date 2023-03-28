@@ -10,12 +10,39 @@ const Proxies = () => {
     const [proxyString, setProxyString] = useState('');
     const [proxies, setProxies] = useState([]);
     const { userInfo, setUserInfo, loggedIn, setLoggedIn } = useContext(UserContext);
+    const [selectedProxies, setSelectedProxies] = useState([]);
+
+
+    const responseTimeRenderer = (params) => {
+        const responseTime = params.value;
+
+        let color;
+        if (responseTime < 100) {
+            color = 'green';
+        } else if (responseTime >= 100 && responseTime < 300) {
+            color = 'lightgreen';
+        } else if (responseTime >= 300 && responseTime < 600) {
+            color = 'orange';
+        } else if (responseTime >= 600 && responseTime < 3000) {
+            color = 'red';
+        } else {
+            color = 'darkred';
+        }
+
+        return <div style={{ color: color, padding: '0.5rem' }}>{responseTime}</div>;
+    };
 
     const columns = [
         { field: 'address', headerName: 'Address', minWidth: 150 },
         { field: 'port', headerName: 'Port', minWidth: 100 },
         { field: 'username', headerName: 'User', minWidth: 150 },
         { field: 'password', headerName: 'Password', minWidth: 150 },
+        {
+            field: 'responseTime',
+            headerName: 'Response Time',
+            minWidth: 150,
+            renderCell: responseTimeRenderer,
+        },
     ];
 
 
@@ -124,24 +151,54 @@ const Proxies = () => {
 
     }, [proxies]);
 
-    const testAllProxies = async () => {
-        console.log("testing")
-        const response = await fetch(`http://localhost:5000/user/proxytest/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                "x-auth-token": localStorage.getItem("authToken")
-            },
-            body: JSON.stringify({ proxies: rows }),
-        });
+    const testProxy = async (proxy) => {
+        try {
+            const response = await fetch(`http://localhost:5000/user/proxytest/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-auth-token": localStorage.getItem("authToken"),
+                },
+                body: JSON.stringify({ proxies: [proxy] }),
+            });
 
-        if (response.ok) {
-            const result = await response.json();
-            console.log(result);
-        } else {
-            console.error('Error testing proxies:', response.status);
+            if (response.ok) {
+                const result = await response.json();
+                return result.results[0];
+            } else {
+                console.error("Error testing proxy:", response.status);
+            }
+        } catch (error) {
+            console.error("Error testing proxy:", error);
+        }
+        return null;
+    };
+
+    const testAllProxies = async () => {
+        console.log("testing");
+
+        for (const row of rows) {
+            const proxy = { address: row.address, port: row.port, username: row.username, password: row.password };
+            const proxyResult = await testProxy(proxy);
+
+            if (proxyResult) {
+                setRows((prevRows) =>
+                    prevRows.map((r) => {
+                        if (r.id === row.id) {
+                            return { ...r, responseTime: proxyResult.responseTime };
+                        }
+                        return r;
+                    })
+                );
+            }
         }
     };
+
+
+    const deleteProxies = () => {
+        setRows((prevRows) => prevRows.filter((row) => !selectedProxies.includes(row.id)));
+        setSelectedProxies([]); // Clear the selection
+    }
 
 
     return (
@@ -199,7 +256,8 @@ const Proxies = () => {
                         gap: "0.5rem"
                     }}>
                         <Button onClick={testAllProxies} size="medium" variant="contained" color="negative">Test All</Button>
-                        <Button size="medium" variant="contained" color="primary">Delete Card</Button>
+                        <Button onClick={deleteProxies} size="medium" variant="contained" color="primary">Delete Proxy</Button>
+
 
                     </Box>
                     <DataGrid
@@ -210,6 +268,8 @@ const Proxies = () => {
                         checkboxSelection
                         disableSelectionOnClick
                         experimentalFeatures={{ newEditingApi: true }}
+                        onSelectionModelChange={(newSelection) => setSelectedProxies(newSelection)}
+
                         sx={{
                             boxShadow: 2,
                             color: 'black',

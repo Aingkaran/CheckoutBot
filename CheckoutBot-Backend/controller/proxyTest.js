@@ -3,7 +3,7 @@ const axios = require('axios');
 
 exports.proxyTest = async (req, res) => {
     const proxyList = req.body.proxies;
-    const testUrl = 'https://httpbin.org/ip';
+    const testUrl = 'https://www.nike.com/ca/launch';
     const results = [];
 
     for (const proxy of proxyList) {
