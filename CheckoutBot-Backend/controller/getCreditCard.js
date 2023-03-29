@@ -37,6 +37,7 @@ exports.getCreditCard = async (req, res) => {
                 card_number: decrypt(JSON.parse(card.card_number)),
                 card_expiry: decrypt(JSON.parse(card.card_expiry)),
                 card_cvv: decrypt(JSON.parse(card.card_cvv)),
+                uuid: card.uuid
             };
         });
         res.status(200).json({ creditCards });

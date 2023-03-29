@@ -3,6 +3,7 @@ const client = require("../config/database");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const crypto = require('crypto');
+const { v4: uuidv4 } = require("uuid");
 
 const algorithm = 'aes-256-cbc';
 const key = Buffer.from(process.env.ENCRYPTION_KEY, 'hex');
@@ -28,6 +29,7 @@ exports.newCreditCard = async (req, res) => {
         CREATE TABLE IF NOT EXISTS credit_cards (
             id SERIAL PRIMARY KEY,
             user_id INTEGER REFERENCES users(id),
+            uuid TEXT UNIQUE,
             card_username TEXT,
             card_fullname TEXT,
             card_number TEXT UNIQUE,
@@ -35,6 +37,7 @@ exports.newCreditCard = async (req, res) => {
             card_cvv TEXT
         );`
         );
+        const uuid = uuidv4();
         const hashedCardFullName = encrypt(cardFullName);
         const hashedCardExpiry = encrypt(expiry);
         const hashedCardNumber = encrypt(cardNumber);
@@ -48,8 +51,8 @@ exports.newCreditCard = async (req, res) => {
         }
 
         else {
-            await client.query(`INSERT INTO credit_cards (user_id,card_username, card_fullname, card_number, card_expiry, card_cvv)
-        VALUES ($1, $2, $3, $4, $5,$6)`, [user_id, cardUsername, hashedCardFullName, hashedCardNumber, hashedCardExpiry, hashedCardCVS]);
+            await client.query(`INSERT INTO credit_cards (user_id,card_username, card_fullname, card_number, card_expiry, card_cvv, uuid)
+        VALUES ($1, $2, $3, $4, $5,$6,$7)`, [user_id, cardUsername, hashedCardFullName, hashedCardNumber, hashedCardExpiry, hashedCardCVS, uuid]);
 
             res.status(201).json({ message: 'Credit card added successfully' })
         }

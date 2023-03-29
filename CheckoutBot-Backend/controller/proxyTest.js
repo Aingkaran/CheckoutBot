@@ -13,7 +13,10 @@ exports.proxyTest = async (req, res) => {
 
         try {
             const startTime = Date.now();
-            const response = await axios.get(testUrl, { proxy: false, httpsAgent: agent });
+            const response = await Promise.race([
+                axios.get(testUrl, { proxy: false, httpsAgent: agent }),
+                new Promise((_, reject) => setTimeout(() => reject(new Error('CustomTimeoutError')), 2000)),
+            ]);
             const endTime = Date.now();
             const responseTime = endTime - startTime;
 
@@ -27,7 +30,11 @@ exports.proxyTest = async (req, res) => {
             }
         } catch (error) {
             console.error(`Error testing proxy ${proxyUrl}:`, error);
-            results.push({ proxy, status: 'error', error });
+            if (error.message === 'CustomTimeoutError') {
+                results.push({ proxy, status: 'error', error: { message: 'Request timeout' } });
+            } else {
+                results.push({ proxy, status: 'error', error });
+            }
         }
     }
 

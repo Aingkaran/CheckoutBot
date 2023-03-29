@@ -8,7 +8,6 @@ import UserContext from '../../UserContext';
 
 const Proxies = () => {
     const [proxyString, setProxyString] = useState('');
-    const [proxies, setProxies] = useState([]);
     const { userInfo, setUserInfo, loggedIn, setLoggedIn } = useContext(UserContext);
     const [selectedProxies, setSelectedProxies] = useState([]);
 
@@ -46,20 +45,6 @@ const Proxies = () => {
     ];
 
 
-    const formatProxies = async (proxies) => {
-        const newRows = proxies.map((proxy, index) => {
-            const [address, port, username, password] = proxy.split(':');
-            return {
-                id: index,
-                address,
-                port,
-                username,
-                password,
-            };
-        });
-        setRows(newRows);
-
-    };
 
 
     const addProxies = async (proxies) => {
@@ -90,22 +75,7 @@ const Proxies = () => {
         }
     };
 
-    const [rows, setRows] = useState([
-        {
-            id: 1,
-            address: 'de.smartproxy.com',
-            port: '20000',
-            username: 'user-Aingkaran',
-            password: 'sneakerbot'
-        },
-        {
-            id: 2,
-            address: 'de.smartproxy.com',
-            port: '20000',
-            username: 'user-Aingkaran',
-            password: 'sneakerbot'
-        }
-    ]);
+    const [rows, setRows] = useState([]);
     const handleProxyStringChange = (event) => {
         setProxyString(event.target.value);
     };
@@ -135,6 +105,7 @@ const Proxies = () => {
             }
 
             const result = await response.json();
+            console.log(result)
             setRows(result.proxies);
         } catch (error) {
             console.error('Error:', error);
@@ -146,10 +117,6 @@ const Proxies = () => {
     }, []);
 
 
-    useEffect(() => {
-        formatProxies(proxies);
-
-    }, [proxies]);
 
     const testProxy = async (proxy) => {
         try {
@@ -166,9 +133,13 @@ const Proxies = () => {
                 const result = await response.json();
                 return result.results[0];
             } else {
+
                 console.error("Error testing proxy:", response.status);
             }
         } catch (error) {
+            if (error.message === "timeout") {
+                return { status: "timeout" };
+            }
             console.error("Error testing proxy:", error);
         }
         return null;
@@ -185,6 +156,9 @@ const Proxies = () => {
                 setRows((prevRows) =>
                     prevRows.map((r) => {
                         if (r.id === row.id) {
+                            if (proxyResult.status === 'error' && proxyResult.error.message === 'Request timeout') {
+                                return { ...r, responseTime: "TOO SLOW" };
+                            }
                             return { ...r, responseTime: proxyResult.responseTime };
                         }
                         return r;
@@ -193,10 +167,36 @@ const Proxies = () => {
             }
         }
     };
+    const deleteProxiesFromBackend = async (uuids) => {
+        try {
+            const response = await fetch('http://localhost:5000/user/proxy', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    "x-auth-token": localStorage.getItem("authToken"),
+                },
+                body: JSON.stringify({
+                    user_id: userInfo.id,
+                    uuids,
+                }),
+            });
 
+            if (!response.ok) {
+                throw new Error('Error deleting proxies');
+            }
 
-    const deleteProxies = () => {
-        setRows((prevRows) => prevRows.filter((row) => !selectedProxies.includes(row.id)));
+            const result = await response.json();
+            console.log(result);
+            return result;
+
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+    const deleteProxies = async () => {
+        const uuidsToDelete = rows.filter(row => selectedProxies.includes(row.id)).map(row => row.uuid);
+        await deleteProxiesFromBackend(uuidsToDelete);
+        await fetchProxies();
         setSelectedProxies([]); // Clear the selection
     }
 

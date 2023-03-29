@@ -19,7 +19,7 @@ const Billing = (props) => {
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success');
     const [creditCards, setCreditCards] = useState([]);
-
+    const [selectedCards, setSelectedCards] = useState([])
     const [cardInfo, setCardInfo] = useState({
         customCardName: '',
         number: '',
@@ -38,6 +38,11 @@ const Billing = (props) => {
             name: '',
             focus: '',
         });
+    };
+    const maskCreditCard = (number, showDigits = 4) => {
+        const length = number.length;
+        const masked = number.slice(0, showDigits).padEnd(length, '*');
+        return masked;
     };
     const fetchCreditCards = async () => {
         try {
@@ -84,7 +89,7 @@ const Billing = (props) => {
         };
 
         try {
-            const response = await fetch("http://localhost:5000/user/newCreditCard", requestNewCredit);
+            const response = await fetch("http://localhost:5000/user/creditcard", requestNewCredit);
 
             const data = await response.json();
             if (!response.ok) {
@@ -123,6 +128,50 @@ const Billing = (props) => {
 
 
 
+    const deleteCardsFromBackend = async (uuids) => {
+        console.log(uuids)
+        try {
+            const response = await fetch('http://localhost:5000/user/creditcard', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    "x-auth-token": localStorage.getItem("authToken"),
+                },
+                body: JSON.stringify({
+                    user_id: userInfo.id,
+                    uuids,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Error deleting cards');
+            }
+
+            const result = await response.json();
+            console.log(result);
+            return result;
+
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+    const deleteCards = async () => {
+        console.log({ selectedCards })
+        const uuidsToDelete = creditCards.filter(row => selectedCards.includes(row.id)).map(row => row.uuid);
+        console.log({ uuidsToDelete })
+        await deleteCardsFromBackend(uuidsToDelete);
+        await fetchCreditCards();
+        setSelectedCards([]);
+    };
+    const deleteAllCards = async () => {
+        const uuidsToDelete = creditCards.map(card => card.uuid);
+        await deleteCardsFromBackend(uuidsToDelete);
+        await fetchCreditCards();
+        setSelectedCards([]);
+    }
+
+
+
     const columns = [
         { field: 'id', headerName: 'ID', width: 50 },
         {
@@ -147,21 +196,18 @@ const Billing = (props) => {
 
     ];
     const rows = creditCards.map((card, index) => ({
-        id: index + 1,
+        id: card.id,
         cardName: card.card_username,
         cardNumber: maskCreditCard(card.card_number),
         ownerName: card.card_fullname,
+        uuid: card.uuid
     }));
 
     useEffect(() => {
         fetchCreditCards();
     }, []);
 
-    function maskCreditCard(number, showDigits = 4) {
-        const length = number.length;
-        const masked = number.slice(0, showDigits).padEnd(length, '*');
-        return masked;
-    }
+    console.log(rows)
 
     return (
         <Box
@@ -280,8 +326,8 @@ const Billing = (props) => {
                     display: "flex",
                     gap: "0.5rem"
                 }}>
-                    <Button size="medium" variant="contained" color="negative">Delete All</Button>
-                    <Button size="medium" variant="contained" color="primary">Delete Card</Button>
+                    <Button onClick={deleteAllCards} size="medium" variant="contained" color="negative">Delete All</Button>
+                    <Button onClick={deleteCards} size="medium" variant="contained" color="primary">Delete Card</Button>
 
                 </Box>
                 <DataGrid
@@ -292,6 +338,10 @@ const Billing = (props) => {
                     checkboxSelection
                     disableSelectionOnClick
                     experimentalFeatures={{ newEditingApi: true }}
+                    onSelectionModelChange={(newSelection) => {
+                        setSelectedCards(newSelection);
+                    }}
+
                     sx={{
                         boxShadow: 2,
                         color: 'black',
